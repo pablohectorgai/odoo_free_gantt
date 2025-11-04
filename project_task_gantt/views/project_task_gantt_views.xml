@@ -1,0 +1,58 @@
+<odoo>
+    <data>
+        <record id="view_project_task_gantt" model="ir.ui.view">
+            <field name="name">project.task.gantt</field>
+            <field name="model">project.task</field>
+            <field name="arch" type="xml">
+                <gantt
+                    string="Planificación de Tareas"
+                    date_start="planned_date_begin"
+                    date_stop="planned_date_end"
+                    default_group_by="project_id"
+                    default_scale="month"
+                    progress="progress"
+                >
+                    <field name="name"/>
+                    <field name="user_ids"/>
+                    <field name="stage_id"/>
+                </gantt>
+            </field>
+        </record>
+
+        <record id="action_project_task_gantt" model="ir.actions.act_window">
+            <field name="name">Tareas (Gantt)</field>
+            <field name="res_model">project.task</field>
+            <field name="view_mode">gantt,tree,form</field>
+            <field name="search_view_id" ref="project.view_task_search_form"/>
+        </record>
+
+        <record id="project_task_gantt_action_multi" model="ir.actions.act_window.view">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">gantt</field>
+            <field name="view_id" ref="view_project_task_gantt"/>
+            <field name="act_window_id" ref="action_project_task_gantt"/>
+        </record>
+
+        <record id="project_task_gantt_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="project.view_task_tree2"/>
+            <field name="act_window_id" ref="action_project_task_gantt"/>
+        </record>
+
+        <record id="project_task_gantt_action_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="30"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="project.view_task_form2"/>
+            <field name="act_window_id" ref="action_project_task_gantt"/>
+        </record>
+
+        <menuitem
+            id="menu_project_task_gantt"
+            name="Gantt de Tareas"
+            parent="project.menu_main_pm"
+            action="action_project_task_gantt"
+            sequence="35"
+        />
+    </data>
+</odoo>
