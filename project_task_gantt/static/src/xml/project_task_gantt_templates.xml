@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <templates>
+        <t t-name="project_task_gantt.GanttClientAction" owl="1">
+            <div class="o_project_gantt_container">
+                <div class="o_project_gantt_toolbar">
+                    <div class="o_field_widget">
+                        <label class="o_form_label">Proyecto</label>
+                        <select class="o_input" t-on-change="onProjectChange">
+                            <option t-att-value="''">Todos los proyectos</option>
+                            <t t-foreach="state.projects" t-as="project">
+                                <option t-att-value="project.id" t-att-selected="project.id === state.activeProjectId">
+                                    <t t-esc="project.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>
+                        Actualizar
+                    </button>
+                </div>
+                <t t-if="state.loading">
+                    <div class="o_project_gantt_loading">
+                        <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+                        <span>Cargando tareas…</span>
+                    </div>
+                </t>
+                <t t-elif="state.error">
+                    <div class="o_project_gantt_error">
+                        <i class="fa fa-exclamation-triangle fa-2x text-danger"/>
+                        <span t-esc="state.error"/>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="o_project_gantt_body" t-if="state.tasks.length">
+                        <div class="o_project_gantt_grid" t-att-style="'--gantt-columns:' + state.columns">
+                            <div class="o_project_gantt_sidebar">
+                                <div class="o_project_gantt_task_name" t-foreach="state.tasks" t-as="task" t-key="task.id">
+                                    <span t-esc="task.name"/>
+                                    <small t-esc="task.project"/>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="o_project_gantt_header">
+                                    <span t-foreach="state.timeline" t-as="column" t-key="column.key" t-esc="column.label"/>
+                                </div>
+                                <div class="o_project_gantt_rows">
+                                    <div class="o_project_gantt_row" t-foreach="state.tasks" t-as="task" t-key="task.id">
+                                        <div class="o_project_gantt_cell" t-foreach="state.timeline" t-as="column" t-key="column.key"/>
+                                        <div class="o_project_gantt_bar" t-on-click="() => openTask(task.id)" t-att-style="task.style">
+                                            <span t-esc="task.shortName"/>
+                                            <span>•</span>
+                                            <span t-esc="task.range"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o_project_gantt_body" t-else="">
+                        <div class="o_project_gantt_loading">
+                            <i class="fa fa-info-circle fa-2x"/>
+                            <span>No se encontraron tareas para mostrar.</span>
+                        </div>
+                    </div>
+                    <div class="o_project_gantt_legend" t-if="state.legend.length">
+                        <div class="o_project_gantt_legend_item" t-foreach="state.legend" t-as="item" t-key="item.id">
+                            <span class="o_project_gantt_legend_color" t-att-style="'background:' + item.color"/>
+                            <span t-esc="item.name"/>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </templates>
+</odoo>
